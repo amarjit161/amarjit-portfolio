@@ -1,0 +1,22 @@
+{
+  "name": "react-gh-pages-app",
+  "version": "1.0.0",
+  "private": true,
+  "homepage": "https://<USERNAME>.github.io/react-gh-pages-app",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "deploy": "gh-pages -d dist"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "vite": "^5.4.1",
+    "typescript": "^5.5.3",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "gh-pages": "^6.0.0"
+  }
+}

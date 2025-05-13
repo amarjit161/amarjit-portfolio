@@ -5,11 +5,14 @@ const About = () => {
     <div className="about-section" id="about">
       <div className="about-me">
         <h3 className="title">About Me</h3>
-        <p className="para">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic quis
-          dolores numquam iusto Ratione earum ducimus autem id iure pariatur
-          dolorum quae maiores.
-        </p>
+        <div className="highlight-box">
+          <p className="para">
+            <strong>💻 Profession:</strong> I am Network Engneer. <br />
+            <strong>🎓 Education:</strong> I done BCA from Gurugram univercity. <br />
+            <strong>📜 Certification:</strong> I also have Jetking certified Hardware network engneer. <br />
+            <strong>🧠 Skills Covered:</strong> In Jetking CCNA, Windows server, Linux redhat centoos, basic AWS also.
+          </p>
+        </div>
       </div>
     </div>
   );
