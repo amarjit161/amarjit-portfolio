@@ -1,29 +1,43 @@
 import { useEffect, useRef } from "react";
 import "./styles/WhatIDo.css";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const WhatIDo = () => {
   const containerRef = useRef<(HTMLDivElement | null)[]>([]);
   const setRef = (el: HTMLDivElement | null, index: number) => {
     containerRef.current[index] = el;
   };
+
   useEffect(() => {
-    if (ScrollTrigger.isTouch) {
+    // Touch detection without GSAP
+    const isTouch =
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0 ||
+      // @ts-ignore
+      navigator.msMaxTouchPoints > 0;
+
+    if (isTouch) {
       containerRef.current.forEach((container) => {
         if (container) {
           container.classList.remove("what-noTouch");
-          container.addEventListener("click", () => handleClick(container));
+          container.addEventListener("click", handleClickWrapper);
         }
       });
     }
     return () => {
       containerRef.current.forEach((container) => {
         if (container) {
-          container.removeEventListener("click", () => handleClick(container));
+          container.removeEventListener("click", handleClickWrapper);
         }
       });
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Wrapper to keep the same reference for add/removeEventListener
+  function handleClickWrapper(this: HTMLDivElement, _e: Event) {
+    handleClick(this);
+  }
+
   return (
     <div className="whatIDO">
       <div className="what-box">

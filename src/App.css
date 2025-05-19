@@ -26,3 +26,8 @@
     max-width: var(--cWidth);
   }
 }
+
+/* Locomotive Scroll recommended style */
+#smooth-content {
+  will-change: transform;
+}

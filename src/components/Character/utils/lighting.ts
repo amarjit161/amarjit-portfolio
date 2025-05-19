@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { RGBELoader } from "three-stdlib";
-import { gsap } from "gsap";
 
 const setLighting = (scene: THREE.Scene) => {
   const directionalLight = new THREE.DirectionalLight(0xc7a9ff, 0);
@@ -34,25 +33,36 @@ const setLighting = (scene: THREE.Scene) => {
       pointLight.intensity = 0;
     }
   }
-  const duration = 2;
-  const ease = "power2.inOut";
+
+  // Animate lights on (no GSAP)
   function turnOnLights() {
-    gsap.to(scene, {
-      environmentIntensity: 0.64,
-      duration: duration,
-      ease: ease,
-    });
-    gsap.to(directionalLight, {
-      intensity: 1,
-      duration: duration,
-      ease: ease,
-    });
-    gsap.to(".character-rim", {
-      y: "55%",
-      opacity: 1,
-      delay: 0.2,
-      duration: 2,
-    });
+    // Animate environmentIntensity
+    const startEnv = scene.environmentIntensity ?? 0;
+    const endEnv = 0.64;
+    const startDir = directionalLight.intensity;
+    const endDir = 1;
+    const duration = 2000; // ms
+    const startTime = performance.now();
+
+    function animate(time: number) {
+      const t = Math.min((time - startTime) / duration, 1);
+      // Simple ease in-out
+      const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+      scene.environmentIntensity = startEnv + (endEnv - startEnv) * ease;
+      directionalLight.intensity = startDir + (endDir - startDir) * ease;
+
+      // Animate .character-rim if present
+      const rim = document.querySelector<HTMLElement>(".character-rim");
+      if (rim) {
+        rim.style.transform = `translateY(${55 * ease}%)`;
+        rim.style.opacity = `${ease}`;
+      }
+
+      if (t < 1) {
+        requestAnimationFrame(animate);
+      }
+    }
+    requestAnimationFrame(animate);
   }
 
   return { setPointLight, turnOnLights };

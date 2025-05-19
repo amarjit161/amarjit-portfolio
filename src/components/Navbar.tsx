@@ -1,28 +1,24 @@
 import { useEffect } from "react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import HoverLinks from "./HoverLinks";
-import { gsap } from "gsap";
-import { ScrollSmoother } from "gsap-trial/ScrollSmoother";
+import LocomotiveScroll from "locomotive-scroll";
+import "locomotive-scroll/dist/locomotive-scroll.css";
 import "./styles/Navbar.css";
 
-gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
-export let smoother: ScrollSmoother;
+let locoScroll: any = null;
 
 const Navbar = () => {
   useEffect(() => {
-    smoother = ScrollSmoother.create({
-      wrapper: "#smooth-wrapper",
-      content: "#smooth-content",
-      smooth: 1.7,
-      speed: 1.7,
-      effects: true,
-      autoResize: true,
-      ignoreMobileResize: true,
-    });
+    if (!locoScroll) {
+      locoScroll = new LocomotiveScroll({
+        el: document.querySelector("#smooth-content") as HTMLElement,
+        smooth: true,
+        multiplier: 1.7,
+        smartphone: { smooth: true },
+        tablet: { smooth: true },
+      });
+    }
 
-    smoother.scrollTop(0);
-    smoother.paused(true);
-
+    // Scroll to section on nav link click
     let links = document.querySelectorAll(".header ul a");
     links.forEach((elem) => {
       let element = elem as HTMLAnchorElement;
@@ -31,14 +27,29 @@ const Navbar = () => {
           e.preventDefault();
           let elem = e.currentTarget as HTMLAnchorElement;
           let section = elem.getAttribute("data-href");
-          smoother.scrollTo(section, true, "top top");
+          if (section && locoScroll) {
+            const target = document.querySelector(section);
+            if (target) {
+              locoScroll.scrollTo(target, { offset: 0, duration: 800 });
+            }
+          }
         }
       });
     });
-    window.addEventListener("resize", () => {
-      ScrollSmoother.refresh(true);
-    });
+
+    // Update Locomotive Scroll on resize
+    const handleResize = () => {
+      locoScroll && locoScroll.update();
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      locoScroll && locoScroll.destroy();
+      locoScroll = null;
+    };
   }, []);
+
   return (
     <>
       <div className="header">
